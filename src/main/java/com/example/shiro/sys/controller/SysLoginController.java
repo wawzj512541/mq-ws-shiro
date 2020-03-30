@@ -9,6 +9,7 @@
 package com.example.shiro.sys.controller;
 
 
+import com.example.common.utils.RedisUtil;
 import com.example.config.RabbitConfig;
 import com.example.shiro.common.result.APIResponse;
 import com.example.shiro.common.utils.ShiroUtils;
@@ -18,6 +19,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,7 +42,10 @@ public class SysLoginController {
     private Producer producer;
     @Autowired
     private AmqpTemplate amqpTemplate;
-
+    @Autowired
+    private RedisUtil redisUtil;
+    @Value("${system.expire}")
+    private Integer expire;
     /**
      * 获取验证码
      * @param response
@@ -79,6 +84,7 @@ public class SysLoginController {
             subject.login(token);
             sessionId = subject.getSession().getId().toString();    //获取sessionId,返回给请求端
             //登录成功发送消息
+            redisUtil.hset("sys_user", ShiroUtils.getUserId1().toString(), sessionId,expire);
             amqpTemplate.convertAndSend(RabbitConfig.SYS_LOGIN_QUEUE,ShiroUtils.getUserEntity());
         } catch (UnknownAccountException e) {
             return APIResponse.returnFail(e.getMessage());
@@ -97,7 +103,9 @@ public class SysLoginController {
      */
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public APIResponse logout() {
+        Long id = ShiroUtils.getUserId1();
         ShiroUtils.logout();
+        redisUtil.hdel("sys_user",id.toString());
         return APIResponse.returnSuccess();
     }
 

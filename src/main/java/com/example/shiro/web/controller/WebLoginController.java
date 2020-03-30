@@ -19,6 +19,7 @@ import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,6 +44,9 @@ public class WebLoginController {
     private AmqpTemplate amqpTemplate;
     @Autowired
     private RedisUtil redisUtil;
+
+    @Value("${system.expire}")
+    private Integer expire;
 
     /**
      * 获取验证码
@@ -83,7 +87,7 @@ public class WebLoginController {
             subject.login(token);
             sessionId = subject.getSession().getId().toString();    //获取sessionId,返回给请求端
             //登录成功发送消息
-            redisUtil.hset("web_user", ShiroUtils.getWebUser().getUserId().toString(), sessionId);
+            redisUtil.hset("web_user", ShiroUtils.getUserId1().toString(), sessionId, expire);
             amqpTemplate.convertAndSend(RabbitConfig.WEB_LOGIN_QUEUE, ShiroUtils.getWebUser());
         } catch (UnknownAccountException e) {
             return APIResponse.returnFail(e.getMessage());
@@ -102,7 +106,9 @@ public class WebLoginController {
      */
     @RequestMapping(value = "/web/logout", method = RequestMethod.GET)
     public APIResponse logout() {
+        Long id = ShiroUtils.getUserId1();
         ShiroUtils.logout();
+        redisUtil.hdel("web_user",id.toString());
         return APIResponse.returnSuccess();
     }
 

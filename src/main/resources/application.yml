@@ -53,8 +53,8 @@ mybatis-plus:
   type-aliases-super-type:
 
 system:
-  manager: true
-
+  manager: false
+  expire: 3600
 logging:
   level:
     root: info
