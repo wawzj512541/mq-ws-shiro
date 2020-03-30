@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.zhongke.cotrun.shiro.web.dao.WebUserDao">
+<mapper namespace="com.example.shiro.web.dao.WebUserDao">
 
     <!-- 查询用户的所有权限 -->
     <select id="queryAllPerms" resultType="string">
@@ -13,7 +13,7 @@
 	</select>
 
 	<!-- 查询用户的所有权限 -->
-	<select id="queryAllPerms1" resultType="com.zhongke.cotrun.shiro.web.entity.WebMenuEntity">
+	<select id="queryAllPerms1" resultType="webMenuEntity">
 		select m.* from web_user_role ur
 			LEFT JOIN web_role_menu rm on ur.role_id = rm.role_id
 			LEFT JOIN web_menu m on rm.menu_id = m.menu_id
@@ -29,7 +29,7 @@
 		where ur.user_id = #{userId} and rm.menu_id &gt;= 0 and wr.status =0
 	</select>
 
-	<select id="queryUrlList" resultType="com.zhongke.cotrun.shiro.web.entity.WebMenuEntity">
+	<select id="queryUrlList" resultType="webMenuEntity">
 		select m.* from web_user_role ur
 			LEFT JOIN web_role_menu rm on ur.role_id = rm.role_id
 			LEFT JOIN web_menu m on rm.menu_id = m.menu_id

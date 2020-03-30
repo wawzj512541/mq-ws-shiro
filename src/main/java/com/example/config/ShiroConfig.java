@@ -101,7 +101,7 @@ public class ShiroConfig {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setPrincipalIdFieldName("userId");
         redisCacheManager.setRedisManager(redisManager());
-        redisCacheManager.setExpire(60 * 60 * 1000);
+        redisCacheManager.setExpire(60 * 60);   //时间单位秒,默认值30分钟
         redisCacheManager.setKeyPrefix(cachePrefix);
         return redisCacheManager;
     }
@@ -127,7 +127,7 @@ public class ShiroConfig {
         // 定时清理失效会话, 清理用户直接关闭浏览器造成的孤立会话
         sessionManager.setSessionValidationSchedulerEnabled(true);
         sessionManager.setSessionDAO(redisSessionDAO);
-        sessionManager.setGlobalSessionTimeout(60 * 60 * 1000);
+        sessionManager.setGlobalSessionTimeout(60 * 60 * 1000); //时间单位毫秒,默认值30分钟
         sessionManager.setSessionIdCookie(sessionIdCookie());
         return sessionManager;
     }

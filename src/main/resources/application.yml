@@ -35,7 +35,7 @@ spring:
       shutdown-timeout: 100
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: com.example.web.entity,com.example.shiro.*.entity
   global-config:
@@ -53,7 +53,7 @@ mybatis-plus:
   type-aliases-super-type:
 
 system:
-  manager: false
+  manager: true
 
 logging:
   level:

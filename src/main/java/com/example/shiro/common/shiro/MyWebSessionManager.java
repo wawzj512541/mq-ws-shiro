@@ -1,15 +1,22 @@
 package com.example.shiro.common.shiro;
 
+import com.example.common.utils.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.web.servlet.ShiroHttpServletRequest;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.apache.shiro.web.util.WebUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
 
 public class MyWebSessionManager extends DefaultWebSessionManager {
+
+    @Autowired
+    RedisUtil redisUtil;
+
     public final static String token_name = "token";
 
     public final static String session_id_Source = "request_header";
@@ -27,5 +34,11 @@ public class MyWebSessionManager extends DefaultWebSessionManager {
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_IS_VALID, Boolean.TRUE);
             return token;
         }
+    }
+
+    @Override
+    protected void delete(Session session) {
+        System.out.println(session.toString());
+        super.delete(session);
     }
 }

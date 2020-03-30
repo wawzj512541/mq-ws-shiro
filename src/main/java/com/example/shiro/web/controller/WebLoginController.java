@@ -9,6 +9,7 @@
 package com.example.shiro.web.controller;
 
 
+import com.example.common.utils.RedisUtil;
 import com.example.config.RabbitConfig;
 import com.example.shiro.common.result.APIResponse;
 import com.example.shiro.common.utils.ShiroUtils;
@@ -40,9 +41,12 @@ public class WebLoginController {
     private Producer producer;
     @Autowired
     private AmqpTemplate amqpTemplate;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 获取验证码
+     *
      * @param response
      * @throws IOException
      */
@@ -79,7 +83,8 @@ public class WebLoginController {
             subject.login(token);
             sessionId = subject.getSession().getId().toString();    //获取sessionId,返回给请求端
             //登录成功发送消息
-            amqpTemplate.convertAndSend(RabbitConfig.WEB_LOGIN_QUEUE,ShiroUtils.getWebUser());
+            redisUtil.hset("web_user", ShiroUtils.getWebUser().getUserId().toString(), sessionId);
+            amqpTemplate.convertAndSend(RabbitConfig.WEB_LOGIN_QUEUE, ShiroUtils.getWebUser());
         } catch (UnknownAccountException e) {
             return APIResponse.returnFail(e.getMessage());
         } catch (IncorrectCredentialsException e) {

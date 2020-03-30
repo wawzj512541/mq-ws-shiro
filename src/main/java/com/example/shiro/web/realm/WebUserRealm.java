@@ -9,6 +9,7 @@
 package com.example.shiro.web.realm;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.common.utils.RedisUtil;
 import com.example.shiro.common.shiro.Constant;
 import com.example.shiro.web.dao.WebMenuDao;
 import com.example.shiro.web.dao.WebUserDao;
@@ -39,6 +40,8 @@ public class WebUserRealm extends AuthorizingRealm {
     private WebUserDao webUserDao;
     @Autowired
     private WebMenuDao webMenuDao;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 授权(验证权限时调用)
@@ -98,22 +101,11 @@ public class WebUserRealm extends AuthorizingRealm {
             throw new LockedAccountException("账号已被锁定,请联系管理员");
         }
         //处理session
-//        SessionsSecurityManager securityManager = (SessionsSecurityManager) SecurityUtils.getSecurityManager();
-//        DefaultSessionManager sessionManager = (DefaultSessionManager) securityManager.getSessionManager();
-//        Collection<Session> sessions = sessionManager.getSessionDAO().getActiveSessions();//获取当前已登录的用户session列表
-//        for (Session session : sessions) {
-//            //清除该用户以前登录时保存的session
-//            //如果和当前session是同一个session，则不剔除
-//            if (SecurityUtils.getSubject().getSession().getId().equals(session.getId()))
-//                break;
-//            SimplePrincipalCollection coll = (SimplePrincipalCollection) (session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY));
-//            WebUserEntity entity = (WebUserEntity) coll.getPrimaryPrincipal();
-//            String sessionName = entity.getPhoneNumber();
-//            if (username.equals(sessionName)) {
-//                System.out.println(username + "已登录，剔除中...");
-//                sessionManager.getSessionDAO().delete(session);
-//            }
-//        }
+        Object tokenId = redisUtil.hget("web_user", user.getUserId().toString());
+        if (tokenId != null) {
+            redisUtil.remove("shiro:web:session:" + tokenId);
+            System.out.println(username + "已登录，剔除中...");
+        }
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(user.getUsername()), getName());
         return info;
     }
@@ -121,11 +113,6 @@ public class WebUserRealm extends AuthorizingRealm {
     /**
      * 设置加密
      */
-    /*@Override
-    public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
-        CustomCredentialsMatcher customCredentialsMatcher = new CustomCredentialsMatcher();
-        super.setCredentialsMatcher(customCredentialsMatcher);
-    }*/
     @Override
     public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
@@ -146,4 +133,5 @@ public class WebUserRealm extends AuthorizingRealm {
     public boolean supports(AuthenticationToken var1) {
         return var1 instanceof UsernamePasswordToken;
     }
+
 }
