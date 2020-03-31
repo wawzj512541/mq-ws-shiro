@@ -87,7 +87,7 @@ public class WebLoginController {
             subject.login(token);
             sessionId = subject.getSession().getId().toString();    //获取sessionId,返回给请求端
             //登录成功发送消息
-            redisUtil.hset("web_user", ShiroUtils.getUserId1().toString(), sessionId, expire);
+            redisUtil.set("web_user:"+ShiroUtils.getUserId1().toString(), sessionId, expire);
             amqpTemplate.convertAndSend(RabbitConfig.WEB_LOGIN_QUEUE, ShiroUtils.getWebUser());
         } catch (UnknownAccountException e) {
             return APIResponse.returnFail(e.getMessage());
@@ -108,7 +108,7 @@ public class WebLoginController {
     public APIResponse logout() {
         Long id = ShiroUtils.getUserId1();
         ShiroUtils.logout();
-        redisUtil.hdel("web_user",id.toString());
+        redisUtil.remove("web_user:"+id.toString());
         return APIResponse.returnSuccess();
     }
 

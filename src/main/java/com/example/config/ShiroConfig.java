@@ -10,6 +10,7 @@ package com.example.config;
 
 import com.example.shiro.common.shiro.MyWebSessionManager;
 import com.example.shiro.common.shiro.ShiroLoginFilter;
+import com.example.shiro.common.shiro.UuidSessionIdGenerator;
 import com.example.shiro.sys.shiro.SysUserRealm;
 import com.example.shiro.web.realm.MyCustomModularRealmAuthenticator;
 import com.example.shiro.web.realm.WebUserPhoneRealm;
@@ -116,6 +117,7 @@ public class ShiroConfig {
     @Bean("redisSessionDAO")
     public RedisSessionDAO redisSessionDAO() {
         RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
+        redisSessionDAO.setSessionIdGenerator(new UuidSessionIdGenerator());
         redisSessionDAO.setRedisManager(redisManager());
         redisSessionDAO.setKeyPrefix(sessionPrefix);
         return redisSessionDAO;

@@ -42,10 +42,6 @@ public class SysLoginController {
     private Producer producer;
     @Autowired
     private AmqpTemplate amqpTemplate;
-    @Autowired
-    private RedisUtil redisUtil;
-    @Value("${system.expire}")
-    private Integer expire;
     /**
      * 获取验证码
      * @param response
@@ -84,7 +80,6 @@ public class SysLoginController {
             subject.login(token);
             sessionId = subject.getSession().getId().toString();    //获取sessionId,返回给请求端
             //登录成功发送消息
-            redisUtil.hset("sys_user", ShiroUtils.getUserId1().toString(), sessionId,expire);
             amqpTemplate.convertAndSend(RabbitConfig.SYS_LOGIN_QUEUE,ShiroUtils.getUserEntity());
         } catch (UnknownAccountException e) {
             return APIResponse.returnFail(e.getMessage());
@@ -103,9 +98,7 @@ public class SysLoginController {
      */
     @RequestMapping(value = "logout", method = RequestMethod.GET)
     public APIResponse logout() {
-        Long id = ShiroUtils.getUserId1();
         ShiroUtils.logout();
-        redisUtil.hdel("sys_user",id.toString());
         return APIResponse.returnSuccess();
     }
 

@@ -101,7 +101,7 @@ public class WebUserRealm extends AuthorizingRealm {
             throw new LockedAccountException("账号已被锁定,请联系管理员");
         }
         //处理session
-        Object tokenId = redisUtil.hget("web_user", user.getUserId().toString());
+        Object tokenId = redisUtil.get("web_user:" + user.getUserId().toString());
         if (tokenId != null) {
             redisUtil.remove("shiro:web:session:" + tokenId);
             System.out.println(username + "已登录，剔除中...");

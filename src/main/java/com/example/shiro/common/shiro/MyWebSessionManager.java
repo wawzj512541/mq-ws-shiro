@@ -1,7 +1,6 @@
 package com.example.shiro.common.shiro;
 
 import com.example.common.utils.RedisUtil;
-import com.example.shiro.sys.entity.SysUserEntity;
 import com.example.shiro.web.entity.WebUserEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.session.Session;
@@ -28,16 +27,7 @@ public class MyWebSessionManager extends DefaultWebSessionManager {
 
     @Value("${system.expire}")
     private Integer expire;
-    private String sessionPrefix;   //session前缀,用于存储用户会话信息
-
-    @Value("${system.manager}")
-    private void setShiroPrefix(Boolean manager) {
-        if (manager) {
-            sessionPrefix = "sys_user";
-        } else {
-            sessionPrefix = "web_user";
-        }
-    }
+    private String sessionPrefix = "web_user:";   //session前缀,用于存储用户会话信息
 
     @Override
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
@@ -60,10 +50,8 @@ public class MyWebSessionManager extends DefaultWebSessionManager {
         SimplePrincipalCollection coll = (SimplePrincipalCollection) (session.getAttribute(DefaultSubjectContext.PRINCIPALS_SESSION_KEY));
         if (coll != null) {
             Object obj = coll.getPrimaryPrincipal();
-            if (obj.getClass().getName().indexOf("SysUserEntity") > 0) {
-                redisUtil.hset(sessionPrefix, ((SysUserEntity) obj).getUserId().toString(), session.getId(), expire);
-            } else {
-                redisUtil.hset(sessionPrefix, ((WebUserEntity) obj).getUserId().toString(), session.getId(), expire);
+            if (obj.getClass().getName().indexOf("WebUserEntity") > 0) {
+                redisUtil.set(sessionPrefix + ((WebUserEntity) obj).getUserId().toString(), session.getId(), expire);
             }
         }
         super.onChange(session);
