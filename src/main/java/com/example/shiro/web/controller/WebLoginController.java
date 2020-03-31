@@ -108,7 +108,8 @@ public class WebLoginController {
     public APIResponse logout() {
         Long id = ShiroUtils.getUserId1();
         ShiroUtils.logout();
-        redisUtil.remove("web_user:"+id.toString());
+        if(id!=null)
+            redisUtil.remove("web_user:"+id.toString());
         return APIResponse.returnSuccess();
     }
 
