@@ -1,4 +1,4 @@
-package com.example.shiro.common.annotation;
+package com.example.common.annotation;
 
 import java.lang.annotation.*;
 

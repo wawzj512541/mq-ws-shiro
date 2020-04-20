@@ -1,11 +1,11 @@
 package com.example.shiro.web.controller;
 
-import com.example.shiro.common.annotation.SysLog;
+import com.example.common.annotation.SysLog;
 import com.example.shiro.common.result.APIResponse;
-import com.example.shiro.sys.controller.AbstractController;
 import com.example.shiro.common.utils.Assert;
 import com.example.shiro.common.utils.PageUtils;
 import com.example.shiro.common.utils.UserValidator;
+import com.example.shiro.sys.controller.AbstractController;
 import com.example.shiro.web.entity.WebRoleEntity;
 import com.example.shiro.web.service.WebRoleMenuService;
 import com.example.shiro.web.service.WebRoleService;
@@ -77,7 +77,7 @@ public class WebRoleController extends AbstractController {
     /**
      * 保存角色
      */
-    @SysLog(value = "保存角色",type = "web角色")
+    @SysLog(value = "保存角色", type = "web角色")
     @RequestMapping("/save")
     @RequiresPermissions("web:role:save")
     public APIResponse save(WebRoleEntity role) {
@@ -92,7 +92,7 @@ public class WebRoleController extends AbstractController {
     /**
      * 修改角色
      */
-    @SysLog(value = "修改角色",type = "web角色")
+    @SysLog(value = "修改角色", type = "web角色")
     @RequestMapping("/update")
     @RequiresPermissions("web:role:update")
     public APIResponse update(WebRoleEntity role) {
@@ -106,7 +106,7 @@ public class WebRoleController extends AbstractController {
     /**
      * 删除角色
      */
-    @SysLog(value = "删除角色",type = "web角色")
+    @SysLog(value = "删除角色", type = "web角色")
     @RequestMapping("/delete")
     @RequiresPermissions("web:role:delete")
     public APIResponse delete(Long[] roleIds) {
@@ -115,12 +115,12 @@ public class WebRoleController extends AbstractController {
         return APIResponse.returnSuccess();
     }
 
-    @SysLog(value = "修改角色状态",type = "web角色")
+    @SysLog(value = "修改角色状态", type = "web角色")
     @PostMapping("/updateStatus")
     @RequiresPermissions("web:role:update")
-    public APIResponse updateStatus(WebRoleEntity role){
-        Assert.isNull(role.getRoleId(),"id不能为空！");
-        Assert.isNull(role.getStatus(),"状态不能为空！");
+    public APIResponse updateStatus(WebRoleEntity role) {
+        Assert.isNull(role.getRoleId(), "id不能为空！");
+        Assert.isNull(role.getStatus(), "状态不能为空！");
         webRoleService.updateStatus(role);
         return APIResponse.returnSuccess();
     }

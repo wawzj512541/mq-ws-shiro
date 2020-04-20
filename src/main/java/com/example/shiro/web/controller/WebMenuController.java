@@ -1,9 +1,9 @@
 package com.example.shiro.web.controller;
 
-import com.example.shiro.common.annotation.SysLog;
+import com.example.common.annotation.SysLog;
+import com.example.shiro.common.RRException;
 import com.example.shiro.common.result.APIResponse;
 import com.example.shiro.common.shiro.Constant;
-import com.example.shiro.common.RRException;
 import com.example.shiro.sys.controller.AbstractController;
 import com.example.shiro.web.entity.WebMenuEntity;
 import com.example.shiro.web.service.WebMenuService;

@@ -39,7 +39,9 @@ public class Constant {
      */
     public static final String ASC = "asc";
 
-	/**
+    public static final String REDIS_ROOT = "form_commit-:";
+
+    /**
 	 * 菜单类型
 	 */
     public enum MenuType {

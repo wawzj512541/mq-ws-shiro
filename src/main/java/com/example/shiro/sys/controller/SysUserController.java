@@ -9,7 +9,7 @@
 package com.example.shiro.sys.controller;
 
 
-import com.example.shiro.common.annotation.SysLog;
+import com.example.common.annotation.SysLog;
 import com.example.shiro.common.result.APIResponse;
 import com.example.shiro.sys.entity.SysUserEntity;
 import com.example.shiro.sys.service.SysUserRoleService;

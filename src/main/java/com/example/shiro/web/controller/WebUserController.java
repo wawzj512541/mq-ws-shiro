@@ -1,10 +1,10 @@
 package com.example.shiro.web.controller;
 
-import com.example.shiro.common.annotation.SysLog;
+import com.example.common.annotation.SysLog;
 import com.example.shiro.common.result.APIResponse;
-import com.example.shiro.sys.controller.AbstractController;
 import com.example.shiro.common.utils.Assert;
 import com.example.shiro.common.utils.PageUtils;
+import com.example.shiro.sys.controller.AbstractController;
 import com.example.shiro.web.entity.WebUserEntity;
 import com.example.shiro.web.service.WebUserRoleService;
 import com.example.shiro.web.service.WebUserService;
